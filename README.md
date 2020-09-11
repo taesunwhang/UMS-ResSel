@@ -74,11 +74,11 @@ Domain-specific Post-Training
 
 ```shell
 #Ubuntu Corpus V1
-sh scripts/create_bert_post_checkpoints_ubuntu.sh
+sh scripts/create_bert_post_data_creation_ubuntu.sh
 #Douban Corpus
-sh scripts/create_bert_post_checkpoints_douban.sh
+sh scripts/create_bert_post_data_creation_douban.sh
 #E-commerce Corpus
-sh scripts/create_bert_post_checkpoints_e-commerce.sh
+sh scripts/create_bert_post_data_creation_e-commerce.sh
 ```
 
 #### Data for post-training ELECTRA 
@@ -110,33 +110,33 @@ Training Response Selection Models
 
 #### BERT-Base
 
-| model     | task_name              | data_dir                         | bert_pretrained       | bert_checkpoint_path                |
-| --------- | ---------------------- | -------------------------------- | --------------------- | ----------------------------------- |
-| bert_base | ubuntu                 | data/ubuntu_corpus_v1            | bert-base-uncased     | bert-base-uncased-pytorch_model.bin |
-| bert_base | douban<br />e-commerce | data/douban<br />data/e-commerce | bert-base-wwm-chinese | bert-base-wwm-chinese_model.bin     |
+| task_name              | data_dir                         | bert_pretrained       | bert_checkpoint_path                |
+| ---------------------- | -------------------------------- | --------------------- | ----------------------------------- |
+| ubuntu                 | data/ubuntu_corpus_v1            | bert-base-uncased     | bert-base-uncased-pytorch_model.bin |
+| douban<br />e-commerce | data/douban<br />data/e-commerce | bert-base-wwm-chinese | bert-base-wwm-chinese_model.bin     |
 
 #### BERT-Post
 
-| model     | task_name  | data_dir              | bert_pretrained     | bert_checkpoint_path                  |
-| --------- | ---------- | --------------------- | ------------------- | ------------------------------------- |
-| bert_post | ubuntu     | data/ubuntu_corpus_v1 | bert-post-uncased   | bert-post-uncased-pytorch_model.pth   |
-| bert_post | douban     | data/douban           | bert-post-douban    | bert-post-douban-pytorch_model.pth    |
-| bert_post | e-commerce | data/e-commerce       | bert-post-ecommerce | bert-post-ecommerce-pytorch_model.pth |
+| task_name  | data_dir              | bert_pretrained     | bert_checkpoint_path                  |
+| ---------- | --------------------- | ------------------- | ------------------------------------- |
+| ubuntu     | data/ubuntu_corpus_v1 | bert-post-uncased   | bert-post-uncased-pytorch_model.pth   |
+| douban     | data/douban           | bert-post-douban    | bert-post-douban-pytorch_model.pth    |
+| e-commerce | data/e-commerce       | bert-post-ecommerce | bert-post-ecommerce-pytorch_model.pth |
 
 #### ELECTRA-Base
 
-| model        | task_name              | data_dir                         | bert_pretrained      | bert_checkpoint_path                   |
-| ------------ | ---------------------- | -------------------------------- | -------------------- | -------------------------------------- |
-| electra_base | ubuntu                 | data/ubuntu_corpus_v1            | electra-base         | electra-base-pytorch_model.bin         |
-| electra_base | douban<br />e-commerce | data/douban<br />data/e-commerce | electra-base-chinese | electra-base-chinese-pytorch_model.bin |
+| task_name              | data_dir                         | bert_pretrained      | bert_checkpoint_path                   |
+| ---------------------- | -------------------------------- | -------------------- | -------------------------------------- |
+| ubuntu                 | data/ubuntu_corpus_v1            | electra-base         | electra-base-pytorch_model.bin         |
+| douban<br />e-commerce | data/douban<br />data/e-commerce | electra-base-chinese | electra-base-chinese-pytorch_model.bin |
 
 #### ELECTRA-Post
 
-| model        | task_name  | data_dir              | bert_pretrained        | bert_checkpoint_path                     |
-| ------------ | ---------- | --------------------- | ---------------------- | ---------------------------------------- |
-| electra_post | ubuntu     | data/ubuntu_corpus_v1 | electra-post           | electra-post-pytorch_model.pth           |
-| electra_post | douban     | data/douban           | electra-post-douban    | electra-post-douban-pytorch_model.pth    |
-| electra_post | e-commerce | data/e-commerce       | electra-post-ecommerce | electra-post-ecommerce-pytorch_model.pth |
+| task_name  | data_dir              | bert_pretrained        | bert_checkpoint_path                     |
+| ---------- | --------------------- | ---------------------- | ---------------------------------------- |
+| ubuntu     | data/ubuntu_corpus_v1 | electra-post           | electra-post-pytorch_model.pth           |
+| douban     | data/douban           | electra-post-douban    | electra-post-douban-pytorch_model.pth    |
+| e-commerce | data/e-commerce       | electra-post-ecommerce | electra-post-ecommerce-pytorch_model.pth |
 
 
 
@@ -170,6 +170,23 @@ python3 main.py --model bert_post --task_name ubuntu --data_dir data/ubuntu_corp
 
 
 
+Performance
+----------
+
+| Ubuntu         | R@1   | R@2   | R@5   |
+| -------------- | ----- | ----- | ----- |
+| [UMS_BERT+][8] | 0.875 | 0.942 | 0.988 |
+
+| Douban         | MAP   | MRR   | P@1   | R@1   | R@2   | R@5   |
+| -------------- | ----- | ----- | ----- | ----- | ----- | ----- |
+| [UMS_BERT+][9] | 0.625 | 0.664 | 0.499 | 0.318 | 0.482 | 0.858 |
+
+| E-Commerce      | R@1   | R@2   | R@5   |
+| --------------- | ----- | ----- | ----- |
+| [UMS_BERT+][10] | 0.762 | 0.905 | 0.986 |
+
+
+
 [1]: https://github.com/huggingface/transformers
 [2]: https://github.com/taesunwhang/BERT-ResSel
 [3]: https://www.dropbox.com/s/2fdn26rj6h9bpvl/ubuntu_data.zip
@@ -177,3 +194,6 @@ python3 main.py --model bert_post --task_name ubuntu --data_dir data/ubuntu_corp
 [5]: https://github.com/cooelf/DeepUtteranceAggregation
 [6]: https://github.com/ymcui/Chinese-BERT-wwm
 [7]: https://github.com/ymcui/Chinese-ELECTRA
+[8]:https://drive.google.com/file/d/14jxet4niR7o_kml8Wp77kFh24C9rVAPT/
+[9]:https://drive.google.com/file/d/1kPd3HpAAkEACZDUs1WZ_vkNAXVvnnzq7/
+[10]:https://drive.google.com/file/d/15k69AtGjwfB81_qP2K7xL2CdcgWvuz0I/
