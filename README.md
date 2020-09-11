@@ -68,9 +68,9 @@ sh scripts/download_datasets.sh
 Domain-specific Post-Training
 --------
 
-### Post-tarining Creation
+### Post-training Creation
 
-#### Data for post-training BERT
+##### Data for post-training BERT
 
 ```shell
 #Ubuntu Corpus V1
@@ -81,7 +81,7 @@ sh scripts/create_bert_post_data_creation_douban.sh
 sh scripts/create_bert_post_data_creation_e-commerce.sh
 ```
 
-#### Data for post-training ELECTRA 
+##### Data for post-training ELECTRA 
 
 ```shell
 sh scripts/download_electra_post_training_pkl.sh
@@ -89,13 +89,15 @@ sh scripts/download_electra_post_training_pkl.sh
 
 
 
-### BERT+ (e.g., Ubuntu Corpus V1)
+### Post-training Examples
+
+##### BERT+ (e.g., Ubuntu Corpus V1)
 
 ```shell
 python3 main.py --model bert_post_training --task_name ubuntu --data_dir data/ubuntu_corpus_v1 --bert_pretrained bert-base-uncased --bert_checkpoint_path bert-base-uncased-pytorch_model.bin --task_type response_selection --gpu_ids "0" --root_dir /path/to/root_dir --training_type post_training
 ```
 
-### ELECTRA+ (e.g., Douban Corpus)
+##### ELECTRA+ (e.g., Douban Corpus)
 
 ```shell
 python3 main.py --model electra_post_training --task_name douban --data_dir data/electra_post_training --bert_pretrained electra-base-chinese --bert_checkpoint_path electra-base-chinese-pytorch_model.bin --task_type response_selection --gpu_ids "0" --root_dir /path/to/root_dir --training_type post_training
@@ -108,14 +110,14 @@ Training Response Selection Models
 
 ### Model Arguments
 
-#### BERT-Base
+##### BERT-Base
 
 | task_name              | data_dir                         | bert_pretrained       | bert_checkpoint_path                |
 | ---------------------- | -------------------------------- | --------------------- | ----------------------------------- |
 | ubuntu                 | data/ubuntu_corpus_v1            | bert-base-uncased     | bert-base-uncased-pytorch_model.bin |
 | douban<br />e-commerce | data/douban<br />data/e-commerce | bert-base-wwm-chinese | bert-base-wwm-chinese_model.bin     |
 
-#### BERT-Post
+##### BERT-Post
 
 | task_name  | data_dir              | bert_pretrained     | bert_checkpoint_path                  |
 | ---------- | --------------------- | ------------------- | ------------------------------------- |
@@ -123,14 +125,14 @@ Training Response Selection Models
 | douban     | data/douban           | bert-post-douban    | bert-post-douban-pytorch_model.pth    |
 | e-commerce | data/e-commerce       | bert-post-ecommerce | bert-post-ecommerce-pytorch_model.pth |
 
-#### ELECTRA-Base
+##### ELECTRA-Base
 
 | task_name              | data_dir                         | bert_pretrained      | bert_checkpoint_path                   |
 | ---------------------- | -------------------------------- | -------------------- | -------------------------------------- |
 | ubuntu                 | data/ubuntu_corpus_v1            | electra-base         | electra-base-pytorch_model.bin         |
 | douban<br />e-commerce | data/douban<br />data/e-commerce | electra-base-chinese | electra-base-chinese-pytorch_model.bin |
 
-#### ELECTRA-Post
+##### ELECTRA-Post
 
 | task_name  | data_dir              | bert_pretrained        | bert_checkpoint_path                     |
 | ---------- | --------------------- | ---------------------- | ---------------------------------------- |
@@ -140,19 +142,21 @@ Training Response Selection Models
 
 
 
-### BERT+ (e.g., Ubuntu Corpus V1)
+### Fine-tuning Examples
+
+##### BERT+ (e.g., Ubuntu Corpus V1)
 
 ```shell
 python3 main.py --model bert_post --task_name ubuntu --data_dir data/ubuntu_corpus_v1 --bert_pretrained bert-post-uncased --bert_checkpoint_path bert-post-uncased-pytorch_model.pth --task_type response_selection --gpu_ids "0" --root_dir /path/to/root_dir
 ```
 
-### UMS BERT+ (e.g., Douban Corpus)
+##### UMS BERT+ (e.g., Douban Corpus)
 
 ```shell
 python3 main.py --model bert_post --task_name douban --data_dir data/douban --bert_pretrained bert-post-uncased --bert_checkpoint_path bert-post-uncased-pytorch_model.pth --task_type response_selection --gpu_ids "0" --root_dir /path/to/root_dir --multi_task_type "ins,del,srch"
 ```
 
-### UMS ELECTRA (e.g., E-Commerce)
+##### UMS ELECTRA (e.g., E-Commerce)
 
 ```shell
 python3 main.py --model electra_base --task_name e-commerce --data_dir data/e-commerce --bert_pretrained electra-base-chinese --bert_checkpoint_path electra-base-chinese-pytorch_model.bin --task_type response_selection --gpu_ids "0" --root_dir /path/to/root_dir --multi_task_type "ins,del,srch"
@@ -162,7 +166,9 @@ python3 main.py --model electra_base --task_name e-commerce --data_dir data/e-co
 
 Evaluation
 ----------
-### UMS BERT+ (e.g., Ubuntu Corpus V1)
+To evaluate the model, set `--evaluate` to `/path/to/checkpoints` 
+
+##### UMS BERT+ (e.g., Ubuntu Corpus V1)
 
 ```shell
 python3 main.py --model bert_post --task_name ubuntu --data_dir data/ubuntu_corpus_v1 --bert_pretrained bert-post-uncased --bert_checkpoint_path bert-post-uncased-pytorch_model.pth --task_type response_selection --gpu_ids "0" --root_dir /path/to/root_dir --evaluate /path/to/checkpoints --multi_task_type "ins,del,srch"
@@ -173,17 +179,19 @@ python3 main.py --model bert_post --task_name ubuntu --data_dir data/ubuntu_corp
 Performance
 ----------
 
+We provide model checkpoints of UMS-BERT+, which obtained new state-of-the-art, for each dataset.
+
 | Ubuntu         | R@1   | R@2   | R@5   |
 | -------------- | ----- | ----- | ----- |
-| [UMS_BERT+][8] | 0.875 | 0.942 | 0.988 |
+| [UMS-BERT+][8] | 0.875 | 0.942 | 0.988 |
 
 | Douban         | MAP   | MRR   | P@1   | R@1   | R@2   | R@5   |
 | -------------- | ----- | ----- | ----- | ----- | ----- | ----- |
-| [UMS_BERT+][9] | 0.625 | 0.664 | 0.499 | 0.318 | 0.482 | 0.858 |
+| [UMS-BERT+][9] | 0.625 | 0.664 | 0.499 | 0.318 | 0.482 | 0.858 |
 
 | E-Commerce      | R@1   | R@2   | R@5   |
 | --------------- | ----- | ----- | ----- |
-| [UMS_BERT+][10] | 0.762 | 0.905 | 0.986 |
+| [UMS-BERT+][10] | 0.762 | 0.905 | 0.986 |
 
 
 
