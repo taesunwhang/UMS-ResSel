@@ -34,9 +34,11 @@ conda create -n ums_ressel python=3.7
 # activate the environment and install all dependencies
 conda activate ums_ressel
 cd UMS-ResSel
+
+# https://pytorch.org
+pip install torch==1.6.0+cu101 -f https://download.pytorch.org/whl/torch_stable.html
 pip install -r requirements.txt
 ```
-
 
 
 Preparing Data and Checkpoints
@@ -153,7 +155,7 @@ python3 main.py --model bert_post --task_name ubuntu --data_dir data/ubuntu_corp
 ##### UMS BERT+ (e.g., Douban Corpus)
 
 ```shell
-python3 main.py --model bert_post --task_name douban --data_dir data/douban --bert_pretrained bert-post-uncased --bert_checkpoint_path bert-post-uncased-pytorch_model.pth --task_type response_selection --gpu_ids "0" --root_dir /path/to/root_dir --multi_task_type "ins,del,srch"
+python3 main.py --model bert_post --task_name douban --data_dir data/douban --bert_pretrained bert-post-douban --bert_checkpoint_path bert-post-douban-pytorch_model.pth --task_type response_selection --gpu_ids "0" --root_dir /path/to/root_dir --multi_task_type "ins,del,srch"
 ```
 
 ##### UMS ELECTRA (e.g., E-Commerce)

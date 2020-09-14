@@ -10,13 +10,13 @@ class BertCls(nn.Module):
     super(BertCls, self).__init__()
     self.hparams = hparams
 
-    pretraomed_config = hparams.pretrained_config.from_pretrained(
+    pretrained_config = hparams.pretrained_config.from_pretrained(
       os.path.join(self.hparams.bert_pretrained_dir, self.hparams.bert_pretrained,
                    "%s-config.json" % self.hparams.bert_pretrained),
     )
     self._model = hparams.pretrained_model.from_pretrained(
       os.path.join(self.hparams.bert_pretrained_dir, self.hparams.bert_pretrained, self.hparams.bert_checkpoint_path),
-      config=pretraomed_config
+      config=pretrained_config
     )
 
     num_new_tok = 0

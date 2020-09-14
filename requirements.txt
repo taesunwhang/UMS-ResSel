@@ -1,3 +1,2 @@
-torch==1.6.0+cu101 -f https://download.pytorch.org/whl/torch_stable.html
-tensorflow==1.15
+tensorflow-gpu==1.15
 transformers==3.0.2

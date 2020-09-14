@@ -46,10 +46,8 @@ class ResponseSelectionDataset(Dataset):
 
           if len(self.input_examples) % 100000 == 0:
             print("%d examples has been loaded!" % len(self.input_examples))
-
             if self.hparams.pca_visualization:
               break
-            break
         except EOFError:
           break
     print(utterance_len_dict)

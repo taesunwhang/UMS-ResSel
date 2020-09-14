@@ -666,7 +666,7 @@ class PreTrainedModel(nn.Module, ModuleUtilsMixin):
                   for s_key in state_dict.keys():
                       print(s_key, state_dict[s_key].shape)
 
-                # taesun -> domain post-training model
+                # domain post-training model
                 # state_dict.keys() : "model", "optimizer"
                 if resolved_archive_file.endswith('.pth'):
                     for state_key in state_dict["model"].keys():

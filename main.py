@@ -5,7 +5,6 @@ import logging
 from datetime import datetime
 
 from config.hparams import *
-from config.baselines_hparams import *
 from train import ResponseSelection
 from post_train.post_training import PostTraining
 
@@ -13,11 +12,6 @@ from evaluation import Evaluation
 from data.ubuntu_corpus_v1.ubuntu_data_utils import InputExamples
 
 PARAMS_MAP = {
-  # Baselines
-  "dual_encoder" : BASELINES_PARAMS,
-  "smn" : BASELINES_PARAMS,
-  "msn" : BASELINES_PARAMS,
-
   # Pre-trained Models
   "bert_base" : BASE_PARAMS,
   "bert_post" : POST_PARAMS,
@@ -34,8 +28,6 @@ PARAMS_MAP = {
 
 DATASET_MAP = {
   "ubuntu" : UBUNTU_PARAMS,
-  "advising" : ADVISING_PARAMS,
-  "mutual" : MUTUAL_PARAMS,
   "e-commerce" : ECOMMERCE_PARAMS,
   "douban" : DOUBAN_PARAMS
 }
