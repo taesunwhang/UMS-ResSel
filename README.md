@@ -1,7 +1,9 @@
 UMS for Multi-turn Response Selection <img src="https://pytorch.org/assets/images/logo-dark.svg" width = "90" align=center />
 ====================================
 
-[![PWC](https://img.shields.io/endpoint.svg?url=https://paperswithcode.com/badge/do-response-selection-models-really-know-what/conversational-response-selection-on-ubuntu-1)](https://paperswithcode.com/sota/conversational-response-selection-on-ubuntu-1?p=do-response-selection-models-really-know-what)Implements the model described in the following paper [Do Response Selection Models Really Know What's Next? Utterance Manipulation Strategies for Multi-turn Response Selection](https://arxiv.org/abs/2009.04703).
+[![PWC](https://img.shields.io/endpoint.svg?url=https://paperswithcode.com/badge/do-response-selection-models-really-know-what/conversational-response-selection-on-ubuntu-1)](https://paperswithcode.com/sota/conversational-response-selection-on-ubuntu-1?p=do-response-selection-models-really-know-what)
+
+Implements the model described in the following paper [Do Response Selection Models Really Know What's Next? Utterance Manipulation Strategies for Multi-turn Response Selection](https://arxiv.org/abs/2009.04703).
 
 ```
 @article{whang2020ums,
