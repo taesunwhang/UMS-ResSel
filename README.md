@@ -6,11 +6,11 @@ UMS for Multi-turn Response Selection <img src="https://pytorch.org/assets/image
 Implements the model described in the following paper [Do Response Selection Models Really Know What's Next? Utterance Manipulation Strategies for Multi-turn Response Selection](https://arxiv.org/abs/2009.04703).
 
 ```
-@article{whang2020ums,
+@inproceedings{whang2021ums,
   title={Do Response Selection Models Really Know What's Next? Utterance Manipulation Strategies for Multi-turn Response Selection},
   author={Whang, Taesun and Lee, Dongyub and Oh, Dongsuk and Lee, Chanhee and Han, Kijong and Lee, Dong-hun and Lee, Saebyeok},
-  journal={arXiv preprint arXiv:2009.04703},
-  year={2020}
+  booktitle={Proceedings of the AAAI Conference on Artificial Intelligence},
+  year={2021}
 }
 ```
 
