@@ -15,6 +15,7 @@ from post_train.electra.dataset import ElectraPostTrainingDataset
 from .pretrained_dpt import BertDPT, ElectraDPT, ElectraNSPDPT
 from models.utils.checkpointing import CheckpointManager, load_checkpoint
 
+
 class PostTraining(object):
   def __init__(self, hparams):
     self.hparams = hparams
@@ -26,9 +27,9 @@ class PostTraining(object):
     # =============================================================================
     self.pretrained_type = self.hparams.model_type.split("_")[0]
     training_dataset_map = {
-      "bert" : BertPostTrainingDataset,
-      "electra" : ElectraPostTrainingDataset,
-      "electra-nsp" : BertPostTrainingDataset
+      "bert": BertPostTrainingDataset,
+      "electra": ElectraPostTrainingDataset,
+      "electra-nsp": BertPostTrainingDataset
     }
 
     self.train_dataset = training_dataset_map[self.pretrained_type](self.hparams, split="train")
@@ -54,7 +55,7 @@ class PostTraining(object):
     training_model_map = {
       "bert": BertDPT,
       "electra": ElectraDPT,
-      "electra-nsp" : ElectraNSPDPT
+      "electra-nsp": ElectraNSPDPT
     }
     self.model = training_model_map[self.pretrained_type](self.hparams)
     self.model = self.model.to(self.device)
@@ -154,7 +155,7 @@ class PostTraining(object):
         # TODO: virtual batch implementation
         accumulate_batch += buffer_batch["input_ids"].shape[0]
         if self.hparams.virtual_batch_size == accumulate_batch \
-            or batch_idx == (len(self.train_dataset) // self.hparams.train_batch_size): # last batch
+            or batch_idx == (len(self.train_dataset) // self.hparams.train_batch_size):  # last batch
 
           self.optimizer.step()
 

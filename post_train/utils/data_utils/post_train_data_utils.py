@@ -1,20 +1,22 @@
 import os
 import sys
+
 sys.path.append(os.getcwd())
 import argparse
 from tqdm import tqdm
 
 from models.bert import tokenization_bert
 
+
 class InputExamples(object):
   def __init__(self, utterances, response, label, seq_lengths):
-
     self.utterances = utterances
     self.response = response
     self.label = label
 
     self.dialog_len = seq_lengths[0]
     self.response_len = seq_lengths[1]
+
 
 class PostTrainDataUtils(object):
   def __init__(self, txt_path, bert_pretrained_dir, bert_pretrained):
@@ -49,7 +51,8 @@ class PostTrainDataUtils(object):
             continue
           fw_handle.write(utt.strip() + "\n")
         fw_handle.write("\n")
-        cnt+=1
+        cnt += 1
+
 
 if __name__ == '__main__':
   arg_parser = argparse.ArgumentParser(description="Pretraining Corpus Creation")
@@ -61,13 +64,12 @@ if __name__ == '__main__':
                           required=True, help="bert-base-wwm-chinese")
   args = arg_parser.parse_args()
 
-  #raw_path = "./data/douban/train.txt"
-  #output_path = "./data/ubuntu_corpus_v1/ubuntu_post_training.txt"
-  #bert_pretrained = "bert-base-wwm-chinese"
+  # raw_path = "./data/douban/train.txt"
+  # output_path = "./data/ubuntu_corpus_v1/ubuntu_post_training.txt"
+  # bert_pretrained = "bert-base-wwm-chinese"
 
   data_utils = PostTrainDataUtils(args.raw_path, "./resources", args.bert_pretrained)
 
   # domain post training corpus creation
   data = data_utils.read_raw_file()
   data_utils.make_post_training_corpus(data, args.output_path)
-

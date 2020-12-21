@@ -7,6 +7,7 @@ from models.bert import tokenization_bert
 
 from torch.utils.data import Dataset
 
+
 class ResponseSelectionDataset(Dataset):
   """
   A full representation of VisDial v1.0 (train/val/test) dataset. According
@@ -46,8 +47,6 @@ class ResponseSelectionDataset(Dataset):
 
           if len(self.input_examples) % 100000 == 0:
             print("%d examples has been loaded!" % len(self.input_examples))
-            if self.hparams.pca_visualization:
-              break
         except EOFError:
           break
     print(utterance_len_dict)
@@ -98,7 +97,7 @@ class ResponseSelectionDataset(Dataset):
     if len(curr_example.utterances) == 1 and self.split == "train":
       return self._single_turn_processing(current_feature)
 
-    if self.hparams.do_sent_insertion and (self.split == "train" or self.hparams.pca_visualization):
+    if self.hparams.do_sent_insertion and self.split == "train":
       anno_sent, segment_ids, attention_mask, ins_pos, target_idx = self._insertion_annotate_sentence(curr_example)
       current_feature["ins"] = dict()
       current_feature["ins"]["anno_sent"] = torch.tensor(anno_sent).long()
@@ -107,7 +106,7 @@ class ResponseSelectionDataset(Dataset):
       current_feature["ins"]["ins_pos"] = torch.tensor(ins_pos).long()
       current_feature["ins"]["label"] = torch.tensor(target_idx).long()
 
-    if self.hparams.do_sent_deletion and (self.split == "train" or self.hparams.pca_visualization):
+    if self.hparams.do_sent_deletion and self.split == "train":
       while True:
         target_idx = random.sample(list(range(self.num_input_examples)), 1)[0]
         target_example = self.input_examples[target_idx]
@@ -122,7 +121,7 @@ class ResponseSelectionDataset(Dataset):
       current_feature["del"]["del_pos"] = torch.tensor(del_pos).long()
       current_feature["del"]["label"] = torch.tensor(target_idx).long()
 
-    if self.hparams.do_sent_search and (self.split == "train" or self.hparams.pca_visualization):
+    if self.hparams.do_sent_search and self.split == "train":
       anno_sent, segment_ids, attention_mask, srch_pos, target_idx = self._search_annotate_sentence(curr_example)
       current_feature["srch"] = dict()
       current_feature["srch"]["anno_sent"] = torch.tensor(anno_sent).long()
@@ -133,31 +132,31 @@ class ResponseSelectionDataset(Dataset):
 
     return current_feature
 
-  def _single_turn_processing(self, featrue:dict):
+  def _single_turn_processing(self, featrue: dict):
 
     max_seq_len = self.hparams.max_sequence_len
     if self.hparams.do_sent_insertion:
       featrue["ins"] = dict()
-      featrue["ins"]["anno_sent"] = torch.tensor([0]*max_seq_len).long()
-      featrue["ins"]["segment_ids"] = torch.tensor([0]*max_seq_len).long()
-      featrue["ins"]["attention_mask"] = torch.tensor([0]*max_seq_len).long()
-      featrue["ins"]["ins_pos"] = torch.tensor([0]*max_seq_len).long()
+      featrue["ins"]["anno_sent"] = torch.tensor([0] * max_seq_len).long()
+      featrue["ins"]["segment_ids"] = torch.tensor([0] * max_seq_len).long()
+      featrue["ins"]["attention_mask"] = torch.tensor([0] * max_seq_len).long()
+      featrue["ins"]["ins_pos"] = torch.tensor([0] * max_seq_len).long()
       featrue["ins"]["label"] = torch.tensor(-1).long()
 
     if self.hparams.do_sent_deletion:
       featrue["del"] = dict()
-      featrue["del"]["anno_sent"] = torch.tensor([0]*max_seq_len).long()
-      featrue["del"]["segment_ids"] = torch.tensor([0]*max_seq_len).long()
-      featrue["del"]["attention_mask"] = torch.tensor([0]*max_seq_len).long()
-      featrue["del"]["del_pos"] = torch.tensor([0]*max_seq_len).long()
+      featrue["del"]["anno_sent"] = torch.tensor([0] * max_seq_len).long()
+      featrue["del"]["segment_ids"] = torch.tensor([0] * max_seq_len).long()
+      featrue["del"]["attention_mask"] = torch.tensor([0] * max_seq_len).long()
+      featrue["del"]["del_pos"] = torch.tensor([0] * max_seq_len).long()
       featrue["del"]["label"] = torch.tensor(-1).long()
 
     if self.hparams.do_sent_search:
       featrue["srch"] = dict()
-      featrue["srch"]["anno_sent"] = torch.tensor([0]*max_seq_len).long()
-      featrue["srch"]["segment_ids"] = torch.tensor([0]*max_seq_len).long()
-      featrue["srch"]["attention_mask"] = torch.tensor([0]*max_seq_len).long()
-      featrue["srch"]["srch_pos"] = torch.tensor([0]*max_seq_len).long()
+      featrue["srch"]["anno_sent"] = torch.tensor([0] * max_seq_len).long()
+      featrue["srch"]["segment_ids"] = torch.tensor([0] * max_seq_len).long()
+      featrue["srch"]["attention_mask"] = torch.tensor([0] * max_seq_len).long()
+      featrue["srch"]["srch_pos"] = torch.tensor([0] * max_seq_len).long()
       featrue["srch"]["label"] = torch.tensor(-1).long()
 
     return featrue
@@ -175,7 +174,7 @@ class ResponseSelectionDataset(Dataset):
       example.utterances = example.utterances[max_dialog_len_idx:max_dialog_len_idx + max_utt_len]
       num_utterances = len(example.utterances)
 
-    utt_len = 3 # cls sep sep
+    utt_len = 3  # cls sep sep
     for utt_id, utt in enumerate(example.utterances):
       if len(utt) > int(self.hparams.max_sequence_len / 4):
         example.utterances[utt_id] = utt[:int(self.hparams.max_sequence_len / 4)]
@@ -210,7 +209,7 @@ class ResponseSelectionDataset(Dataset):
     attention_mask = [1] * len(dialog_context)
 
     target += ["[SEP]"]
-    segment_ids.extend([1] * len(target)) # same utterance
+    segment_ids.extend([1] * len(target))  # same utterance
     attention_mask.extend([1] * len(target))
 
     dialog_target = dialog_context + target
@@ -335,7 +334,7 @@ class ResponseSelectionDataset(Dataset):
     attention_mask = [1] * len(dialog_context)
 
     target += ["[SEP]"]
-    segment_ids.extend([1] * len(target)) # same utterance
+    segment_ids.extend([1] * len(target))  # same utterance
     attention_mask.extend([1] * len(target))
 
     dialog_target = dialog_context + target
@@ -377,7 +376,7 @@ class ResponseSelectionDataset(Dataset):
     segment_ids = [0] * len(dialog_context)
     attention_mask = [1] * len(dialog_context)
 
-    response = response  + ["[SEP]"]
+    response = response + ["[SEP]"]
     segment_ids.extend([1] * len(response))
     attention_mask.extend([1] * len(response))
 
@@ -413,7 +412,7 @@ class ResponseSelectionDataset(Dataset):
           curr_dialog_context.pop(0)  # from the left
         else:
           delete_right -= 1
-          curr_dialog_context.pop() # from the right
+          curr_dialog_context.pop()  # from the right
       else:
         target_dialog_context.pop(0)
 
@@ -432,7 +431,7 @@ class ResponseSelectionDataset(Dataset):
           dialog_context.pop(0)  # from the left
         else:
           target_right -= 1
-          dialog_context.pop() # from the right
+          dialog_context.pop()  # from the right
       else:
         target.pop()
 

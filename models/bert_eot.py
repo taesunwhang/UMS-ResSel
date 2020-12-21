@@ -5,6 +5,7 @@ import torch.nn as nn
 from models.bert_insertion import BertInsertion
 from models.bert import modeling_bert, configuration_bert
 
+
 class BertEOT(nn.Module):
   def __init__(self, hparams):
     super(BertEOT, self).__init__()
@@ -22,9 +23,9 @@ class BertEOT(nn.Module):
       self._bert_model.resize_token_embeddings(self._bert_model.config.vocab_size + 2)  # [EOT]
 
     self._classification = nn.Sequential(
-        nn.Dropout(p=1 - self.hparams.dropout_keep_prob),
-        nn.Linear(self.hparams.bert_hidden_dim * 2, 1)
-      )
+      nn.Dropout(p=1 - self.hparams.dropout_keep_prob),
+      nn.Linear(self.hparams.bert_hidden_dim * 2, 1)
+    )
     if self.hparams.do_sent_insertion:
       self._bert_insertion = BertInsertion(hparams, self._bert_model)
 
@@ -45,17 +46,17 @@ class BertEOT(nn.Module):
     for batch_idx, eot_pos in enumerate(batch["eot_pos"]):
       eot_pos_nonzero = eot_pos.nonzero().view(-1)
 
-      dialog_eot_outputs = bert_outputs[batch_idx,eot_pos_nonzero[:-1],:]
+      dialog_eot_outputs = bert_outputs[batch_idx, eot_pos_nonzero[:-1], :]
       dialog_pooled_outputs = torch.max(dialog_eot_outputs, dim=0)[0]
 
-      response_eot_outputs = bert_outputs[batch_idx,eot_pos_nonzero[-1],:]
+      response_eot_outputs = bert_outputs[batch_idx, eot_pos_nonzero[-1], :]
 
       # bert_output_size * 3
       eot_feats.append(torch.cat((dialog_pooled_outputs, response_eot_outputs), dim=-1))
 
-    eot_logits = torch.stack(eot_feats, dim=0) # bs, bert_output_size * 2
+    eot_logits = torch.stack(eot_feats, dim=0)  # bs, bert_output_size * 2
 
-    logits = self._classification(eot_logits) # bs, 1
+    logits = self._classification(eot_logits)  # bs, 1
     logits = logits.squeeze(-1)
 
     insertion_loss = None

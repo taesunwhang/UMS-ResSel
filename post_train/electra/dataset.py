@@ -7,6 +7,7 @@ import torch
 from torch.utils.data import Dataset
 from models.bert import tokenization_bert
 
+
 class ElectraPostTrainingDataset(Dataset):
   """
   A full representation of VisDial v1.0 (train/val/test) dataset. According
@@ -68,7 +69,7 @@ class ElectraPostTrainingDataset(Dataset):
 
     curr_seq_len = sum(input_mask)
     masked_tok_num = min(self.hparams.max_masked_tok_num, int((curr_seq_len - 2) * 0.15))
-    masked_tok_pos = random.sample(list(range(curr_seq_len)), masked_tok_num) # without cls and sep
+    masked_tok_pos = random.sample(list(range(curr_seq_len)), masked_tok_num)  # without cls and sep
 
     for pos in masked_tok_pos:
       if anno_input_ids[pos] in [self._vocab["[CLS]"], self._vocab["[SEP]"], self._vocab["[UNK]"]]:

@@ -5,6 +5,7 @@ from models.bert_insertion import BertInsertion
 from models.bert_deletion import BertDeletion
 from models.bert_search import BertSearch
 
+
 class BertCls(nn.Module):
   def __init__(self, hparams):
     super(BertCls, self).__init__()
@@ -26,11 +27,11 @@ class BertCls(nn.Module):
       # bert_post already has [EOT]
 
     if self.hparams.do_sent_insertion:
-      num_new_tok += 1 # [INS]
+      num_new_tok += 1  # [INS]
     if self.hparams.do_sent_deletion:
       num_new_tok += 1  # [INS]
     if self.hparams.do_sent_search:
-      num_new_tok += 1 # [SRCH]
+      num_new_tok += 1  # [SRCH]
 
     self._model.resize_token_embeddings(self._model.config.vocab_size + num_new_tok)  # [EOT]
 
@@ -58,16 +59,16 @@ class BertCls(nn.Module):
         attention_mask=batch["res_sel"]["attention_mask"]
       )
       bert_outputs = outputs[0]
-      cls_logits = bert_outputs[:,0,:] # bs, bert_output_size
-      logits = self._classification(cls_logits) # bs, 1
+      cls_logits = bert_outputs[:, 0, :]  # bs, bert_output_size
+      logits = self._classification(cls_logits)  # bs, 1
       logits = logits.squeeze(-1)
       res_sel_loss = self._criterion(logits, batch["res_sel"]["label"])
 
-    if self.hparams.do_sent_insertion and (self.training or self.hparams.pca_visualization):
+    if self.hparams.do_sent_insertion and self.training:
       ins_loss = self._bert_insertion(batch["ins"], batch["res_sel"]["label"])
-    if self.hparams.do_sent_deletion and (self.training or self.hparams.pca_visualization):
+    if self.hparams.do_sent_deletion and self.training:
       del_loss = self._bert_deletion(batch["del"], batch["res_sel"]["label"])
-    if self.hparams.do_sent_search and (self.training or self.hparams.pca_visualization):
+    if self.hparams.do_sent_search and self.training:
       srch_loss = self._bert_search(batch["srch"], batch["res_sel"]["label"])
 
     return logits, (res_sel_loss, ins_loss, del_loss, srch_loss)

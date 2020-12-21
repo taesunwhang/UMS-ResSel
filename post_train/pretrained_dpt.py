@@ -6,6 +6,7 @@ from torch import nn
 from models.bert import modeling_bert, configuration_bert
 from models.electra import modeling_electra, configuration_electra
 
+
 class BertDPT(nn.Module):
   def __init__(self, hparams):
     super(BertDPT, self).__init__()
@@ -23,7 +24,6 @@ class BertDPT(nn.Module):
       self._bert_model.resize_token_embeddings(self._bert_model.config.vocab_size + 1)  # [EOT]
 
   def forward(self, batch):
-
     bert_outputs = self._bert_model(
       input_ids=batch["input_ids"],
       token_type_ids=batch["token_type_ids"],
@@ -34,6 +34,7 @@ class BertDPT(nn.Module):
     mlm_loss, nsp_loss, prediction_scores, seq_relationship_score = bert_outputs[:4]
 
     return None, mlm_loss, nsp_loss
+
 
 class ElectraDPT(nn.Module):
   def __init__(self, hparams):
@@ -58,7 +59,8 @@ class ElectraDPT(nn.Module):
       config=electra_disc_config
     )
 
-    print(self._electra_gen.electra.embeddings.word_embeddings.weight == self._electra_disc.electra.embeddings.word_embeddings.weight)
+    print(
+      self._electra_gen.electra.embeddings.word_embeddings.weight == self._electra_disc.electra.embeddings.word_embeddings.weight)
 
     # tie weights (discriminator and generator)
     if self.hparams.do_eot:
@@ -68,7 +70,8 @@ class ElectraDPT(nn.Module):
       print("gen output embeddings size : ", self._electra_gen.get_output_embeddings())
 
       print("###generator word embedding comparison between input and output###")
-      print(self._electra_gen.electra.embeddings.word_embeddings.weight == self._electra_gen.get_output_embeddings().weight)
+      print(
+        self._electra_gen.electra.embeddings.word_embeddings.weight == self._electra_gen.get_output_embeddings().weight)
       print("###word embedding comparison between discriminator and generator###")
       print(self._electra_gen.electra.embeddings.word_embeddings.weight == self._electra_gen.generator_lm_head.weight)
 
@@ -109,6 +112,7 @@ class ElectraDPT(nn.Module):
 
     return electra_loss, mlm_loss, None
 
+
 class ElectraNSPDPT(nn.Module):
   def __init__(self, hparams):
     super(ElectraNSPDPT, self).__init__()
@@ -132,7 +136,8 @@ class ElectraNSPDPT(nn.Module):
       config=electra_disc_config
     )
 
-    print(self._electra_gen.electra.embeddings.word_embeddings.weight == self._electra_disc.electra.embeddings.word_embeddings.weight)
+    print(
+      self._electra_gen.electra.embeddings.word_embeddings.weight == self._electra_disc.electra.embeddings.word_embeddings.weight)
 
     # tie weights (discriminator and generator)
     if self.hparams.do_eot:
@@ -142,7 +147,8 @@ class ElectraNSPDPT(nn.Module):
       print("gen output embeddings size : ", self._electra_gen.get_output_embeddings())
 
       print("###generator word embedding comparison between input and output###")
-      print(self._electra_gen.electra.embeddings.word_embeddings.weight == self._electra_gen.get_output_embeddings().weight)
+      print(
+        self._electra_gen.electra.embeddings.word_embeddings.weight == self._electra_gen.get_output_embeddings().weight)
       print("###word embedding comparison between discriminator and generator###")
       print(self._electra_gen.electra.embeddings.word_embeddings.weight == self._electra_gen.generator_lm_head.weight)
 
@@ -184,6 +190,3 @@ class ElectraNSPDPT(nn.Module):
     electra_loss = self.hparams.electra_disc_ratio * disc_loss + gen_loss
 
     return electra_loss, mlm_loss, nsp_loss
-
-
-

@@ -2,6 +2,7 @@ import torch
 import torch.nn as nn
 import pickle
 
+
 class BertSearch(nn.Module):
   def __init__(self, hparams, pretrained_model):
     super(BertSearch, self).__init__()
@@ -31,11 +32,6 @@ class BertSearch(nn.Module):
     )
     bert_outputs = outputs[0]
 
-    if self.hparams.pca_visualization:
-      pca_handle = open("/data/taesunwhang/response_selection/visualization/%s/srch_token_representation.pkl"
-                        % self.hparams.task_name, "ab")
-      print(pca_handle)
-
     srch_losses = []
 
     for batch_idx, ins_pos in enumerate(batch["srch_pos"]):
@@ -47,14 +43,11 @@ class BertSearch(nn.Module):
 
       srch_pos_nonzero = ins_pos.nonzero().view(-1)
 
-      dialog_srch_out = bert_outputs[batch_idx, srch_pos_nonzero, :] # num_utterances, 768
+      dialog_srch_out = bert_outputs[batch_idx, srch_pos_nonzero, :]  # num_utterances, 768
       srch_logits = self._classification(dialog_srch_out)  # num_utterances, 1
-      srch_logits = srch_logits.squeeze(-1) # num_utterances
+      srch_logits = srch_logits.squeeze(-1)  # num_utterances
 
       target_id = batch["label"][batch_idx]
-
-      if self.hparams.pca_visualization:
-        pickle.dump([dialog_srch_out.to("cpu").tolist(), target_id.to("cpu").tolist()], pca_handle)
 
       if self.hparams.auxiliary_loss_type == "softmax":
         srch_loss = self._criterion(srch_logits.unsqueeze(0), target_id.unsqueeze(0))

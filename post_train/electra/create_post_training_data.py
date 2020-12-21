@@ -20,6 +20,7 @@ from __future__ import print_function
 
 import sys
 import os
+
 sys.path.append(os.getcwd())
 import random
 import argparse
@@ -27,14 +28,15 @@ import pickle
 
 from models.bert import tokenization_bert
 
+
 class TrainingInstance(object):
   """A single training instance (sentence pair)."""
 
   def __init__(self, input_ids, input_mask, token_type_ids):
-
     self.input_ids = input_ids
     self.input_mask = input_mask
     self.token_type_ids = token_type_ids
+
 
 class ExampleBuilder(object):
   """Given a stream of input text, creates pretraining examples."""
@@ -53,7 +55,7 @@ class ExampleBuilder(object):
     """Adds a line of text to the current example being built."""
     line = line.strip().replace("\n", " ")
     if (not line) and self._current_length != 0:  # empty lines separate docs
-      return self._create_example() # one document is finished -> creating examples
+      return self._create_example()  # one document is finished -> creating examples
     bert_tokens = self._tokenizer.tokenize(line)
     bert_tokens = self._add_special_tokens(bert_tokens, "[EOT]")
 
@@ -118,9 +120,9 @@ class ExampleBuilder(object):
       input_ids += second_segment + [vocab["[SEP]"]]
       segment_ids += [1] * (len(second_segment) + 1)
     input_mask = [1] * len(input_ids)
-    input_ids += [0] * (self._max_length - len(input_ids)) # padding
-    input_mask += [0] * (self._max_length - len(input_mask)) # padding
-    segment_ids += [0] * (self._max_length - len(segment_ids)) # padding
+    input_ids += [0] * (self._max_length - len(input_ids))  # padding
+    input_mask += [0] * (self._max_length - len(input_mask))  # padding
+    segment_ids += [0] * (self._max_length - len(segment_ids))  # padding
 
     self.cnt_examples += 1
 
@@ -137,7 +139,7 @@ class CreateELECTRAPretrainingData(object):
     vocab_file_path = "%s-vocab.txt" % bert_pretrained
 
     self._tokenizer = tokenization_bert.BertTokenizer(vocab_file=os.path.join(bert_pretrained_dir, vocab_file_path))
-    self._tokenizer.add_tokens([special_tok]) # add EOT
+    self._tokenizer.add_tokens([special_tok])  # add EOT
 
     print("BERT tokenizer init completes")
 
@@ -162,10 +164,12 @@ class CreateELECTRAPretrainingData(object):
 
       example = self._example_builder.add_line("")
       if example:
-        pickle.dump(example, f_writer) # for the last example instance
+        pickle.dump(example, f_writer)  # for the last example instance
         n_written += 1
-    print("Total Number of example created : ", self._example_builder.cnt_examples, ":", self._example_builder.num_unk_tok)
+    print("Total Number of example created : ", self._example_builder.cnt_examples, ":",
+          self._example_builder.num_unk_tok)
     f_writer.close()
+
 
 if __name__ == "__main__":
   arg_parser = argparse.ArgumentParser(description="Bert / Create Pretraining Data")

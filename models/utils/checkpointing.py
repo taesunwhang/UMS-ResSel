@@ -18,6 +18,7 @@ import torch
 from torch import nn, optim
 import json
 
+
 class CheckpointManager(object):
   """A checkpoint manager saves state dicts of model and optimizer
        as .pth files in a specified directory. This class closely follows

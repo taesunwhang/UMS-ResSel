@@ -13,33 +13,33 @@ from data.ubuntu_corpus_v1.ubuntu_data_utils import InputExamples
 
 PARAMS_MAP = {
   # Pre-trained Models
-  "bert_base" : BASE_PARAMS,
-  "bert_post" : POST_PARAMS,
+  "bert_base": BASE_PARAMS,
+  "bert_post": POST_PARAMS,
 
-  "electra_base" : BASE_PARAMS,
-  "electra_post" : ELECTRA_POST_PARAMS,
+  "electra_base": BASE_PARAMS,
+  "electra_post": ELECTRA_POST_PARAMS,
 
-  "bert_base_eot" : BASE_EOT_PARAMS,
+  "bert_base_eot": BASE_EOT_PARAMS,
 
-  "bert_post_training" : BERT_POST_TRAINING_PARAMS,
-  "electra_post_training" : ELECTRA_POST_TRAINING_PARAMS,
-  "electra-nsp_post_training" : ELECTRA_NSP_POST_TRAINING_PARAMS
+  "bert_post_training": BERT_POST_TRAINING_PARAMS,
+  "electra_post_training": ELECTRA_POST_TRAINING_PARAMS,
+  "electra-nsp_post_training": ELECTRA_NSP_POST_TRAINING_PARAMS
 }
 
 DATASET_MAP = {
-  "ubuntu" : UBUNTU_PARAMS,
-  "e-commerce" : ECOMMERCE_PARAMS,
-  "douban" : DOUBAN_PARAMS
+  "ubuntu": UBUNTU_PARAMS,
+  "e-commerce": ECOMMERCE_PARAMS,
+  "douban": DOUBAN_PARAMS
 }
 
 PRETRAINED_MODEL_MAP = {
-  "bert" : BERT_MODEL_PARAMS,
-  "electra" : ELECTRA_MODEL_PARAMS
+  "bert": BERT_MODEL_PARAMS,
+  "electra": ELECTRA_MODEL_PARAMS
 }
 
 TRAINING_TYPE_MAP = {
-  "fine_tuning" : ResponseSelection,
-  "post_training" : PostTraining
+  "fine_tuning": ResponseSelection,
+  "post_training": PostTraining
 }
 
 EVAL_TYPE_MAP = {
@@ -53,9 +53,9 @@ MULTI_TASK_TYPE_MAP = {
 }
 
 
-def init_logger(path:str):
+def init_logger(path: str):
   if not os.path.exists(path):
-      os.makedirs(path)
+    os.makedirs(path)
   logger = logging.getLogger()
   logger.handlers = []
   logger.setLevel(logging.DEBUG)
@@ -81,23 +81,25 @@ def init_logger(path:str):
 
   return logger
 
+
 def train_model(args, hparams):
+  timestamp = datetime.now().strftime('%Y%m%d-%H%M%S')
+  root_dir = os.path.join(hparams["root_dir"], args.model, args.task_name, "%s/" % timestamp)
+  logger = init_logger(root_dir)
+  logger.info("Hyper-parameters: %s" % str(hparams))
+  hparams["root_dir"] = root_dir
 
-    timestamp = datetime.now().strftime('%Y%m%d-%H%M%S')
-    root_dir = os.path.join(hparams["root_dir"], args.model, args.task_name, "%s/" % timestamp)
-    logger = init_logger(root_dir)
-    logger.info("Hyper-parameters: %s" % str(hparams))
-    hparams["root_dir"] = root_dir
+  hparams = collections.namedtuple("HParams", sorted(hparams.keys()))(**hparams)
+  model = TRAINING_TYPE_MAP[args.training_type](hparams)
+  model.train()
 
-    hparams = collections.namedtuple("HParams", sorted(hparams.keys()))(**hparams)
-    model = TRAINING_TYPE_MAP[args.training_type](hparams)
-    model.train()
 
 def evaluate_model(args, hparams):
   hparams = collections.namedtuple("HParams", sorted(hparams.keys()))(**hparams)
 
   model = EVAL_TYPE_MAP[args.training_type](hparams)
   model.run_evaluate(args.evaluate)
+
 
 if __name__ == '__main__':
   arg_parser = argparse.ArgumentParser(description="Utterance Manipulation Strategy : Response Selection (PyTorch)")
@@ -111,7 +113,7 @@ if __name__ == '__main__':
                           default="/data/taesunwhang/response_selection/",
                           help="model train logs, checkpoints")
   arg_parser.add_argument("--data_dir", dest="data_dir", type=str, required=True,
-                          help="training pkl path | h5py files") # ubuntu_train.pkl, ubuntu_valid_pkl, ubuntu_test.pkl
+                          help="training pkl path | h5py files")  # ubuntu_train.pkl, ubuntu_valid_pkl, ubuntu_test.pkl
   arg_parser.add_argument("--bert_pretrained_dir", dest="bert_pretrained_dir", type=str,
                           default="./resources",
                           help="bert pretrained directory")
@@ -130,7 +132,7 @@ if __name__ == '__main__':
   arg_parser.add_argument("--gpu_ids", dest="gpu_ids", type=str,
                           help="gpu_ids", default="")
   arg_parser.add_argument("--electra_gen_config", dest="electra_gen_config", type=str,
-                          help="electra_gen_config", default="") # electra-base-gen, electra-base-chinese-gen
+                          help="electra_gen_config", default="")  # electra-base-gen, electra-base-chinese-gen
 
   args = arg_parser.parse_args()
   os.environ["CUDA_VISIBLE_DEVICES"] = args.gpu_ids

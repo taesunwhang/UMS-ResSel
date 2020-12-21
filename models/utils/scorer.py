@@ -1,5 +1,6 @@
 import numpy as np
 
+
 def calculate_candidates_ranking(prediction, ground_truth, eval_candidates_num=10):
   total_num_split = len(ground_truth) / eval_candidates_num
 
@@ -24,6 +25,7 @@ def calculate_candidates_ranking(prediction, ground_truth, eval_candidates_num=1
     pos_index.append(curr_cand)
 
   return rank_by_pred, pos_index, stack_scores
+
 
 def logits_recall_at_k(pos_index, k_list=[1, 2, 5, 10]):
   # 1 dialog, 10 response candidates ground truth 1 or 0
@@ -54,15 +56,17 @@ def logits_recall_at_k(pos_index, k_list=[1, 2, 5, 10]):
 
   return np.sum(num_correct, axis=0)
 
+
 def logits_mrr(pos_index):
   mrr = []
   for i, p_i in enumerate(pos_index):
     if len(p_i) > 0 and p_i[0] >= 0:
       mrr.append(1 / (p_i[0] + 1))
     elif len(p_i) == 0:
-      mrr.append(0) # no answer
+      mrr.append(0)  # no answer
 
   return np.sum(mrr)
+
 
 def precision_at_one(rank_by_pred):
   num_correct = [0] * rank_by_pred.shape[0]
@@ -74,8 +78,8 @@ def precision_at_one(rank_by_pred):
 
   return np.sum(num_correct)
 
-def mean_average_precision(pos_index):
 
+def mean_average_precision(pos_index):
   map = []
   for i, p_i in enumerate(pos_index):
     if len(p_i) > 0:

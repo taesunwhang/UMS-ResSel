@@ -20,6 +20,7 @@ from __future__ import print_function
 
 import sys
 import os
+
 sys.path.append(os.getcwd())
 import collections
 import random
@@ -29,6 +30,7 @@ import numpy as np
 from tqdm import tqdm
 
 from models.bert import tokenization_bert
+
 
 class TrainingInstance(object):
   """A single training instance (sentence pair)."""
@@ -41,8 +43,10 @@ class TrainingInstance(object):
     self.masked_lm_positions = masked_lm_positions
     self.masked_lm_labels = masked_lm_labels
 
+
 MaskedLmInstance = collections.namedtuple("MaskedLmInstance",
                                           ["index", "label"])
+
 
 class CreateBertPretrainingData(object):
   def __init__(self, args):
@@ -53,7 +57,8 @@ class CreateBertPretrainingData(object):
     bert_pretrained_dir = os.path.join("./resources", bert_pretrained)
     vocab_file_path = "%s-vocab.txt" % bert_pretrained
 
-    self._bert_tokenizer = tokenization_bert.BertTokenizer(vocab_file=os.path.join(bert_pretrained_dir, vocab_file_path))
+    self._bert_tokenizer = tokenization_bert.BertTokenizer(
+      vocab_file=os.path.join(bert_pretrained_dir, vocab_file_path))
     self._bert_tokenizer.add_tokens([special_tok])
 
     print("BERT tokenizer init completes")
@@ -82,13 +87,13 @@ class CreateBertPretrainingData(object):
         # Empty lines are used as document delimiters
         if len(line) == 0:
           all_documents.append([])
-          document_cnt +=1
+          document_cnt += 1
           if document_cnt % 50000 == 0:
             print("%d documents have been tokenized!" % document_cnt)
 
         tokens = self._bert_tokenizer.tokenize(line)
         if special_tok and len(tokens) > 0:
-          tokens = self._add_special_tokens(tokens, special_tok) # special tok per sentence
+          tokens = self._add_special_tokens(tokens, special_tok)  # special tok per sentence
 
         if tokens:
           all_documents[-1].append(tokens)
@@ -113,7 +118,7 @@ class CreateBertPretrainingData(object):
       for document_index in tqdm(range(len(all_documents))):
         instances = self.create_instances_from_document(
           all_documents, document_index, max_seq_length, short_seq_prob,
-            masked_lm_prob, max_predictions_per_seq, vocab_words, rng)
+          masked_lm_prob, max_predictions_per_seq, vocab_words, rng)
         self.instance_to_example_feature(instances, self.args.max_seq_length, self.args.max_predictions_per_seq)
       self.build_h5_data(hf, d_idx=d),
       print("Current Dupe Factor : %d" % (d + 1))
@@ -242,13 +247,13 @@ class CreateBertPretrainingData(object):
           segment_ids.append(1)
 
           (tokens, masked_lm_positions, masked_lm_labels) = self.create_masked_lm_predictions(
-               tokens, masked_lm_prob, max_predictions_per_seq, vocab_words, rng)
+            tokens, masked_lm_prob, max_predictions_per_seq, vocab_words, rng)
           instance = TrainingInstance(
-              tokens=tokens,
-              segment_ids=segment_ids,
-              is_random_next=is_random_next,
-              masked_lm_positions=masked_lm_positions,
-              masked_lm_labels=masked_lm_labels)
+            tokens=tokens,
+            segment_ids=segment_ids,
+            is_random_next=is_random_next,
+            masked_lm_positions=masked_lm_positions,
+            masked_lm_labels=masked_lm_labels)
           instances.append(instance)
 
         current_chunk = []
@@ -383,6 +388,7 @@ class CreateBertPretrainingData(object):
       self.all_doc_feat_dict["masked_lm_positions"].append(masked_lm_positions)
       self.all_doc_feat_dict["masked_lm_ids"].append(masked_lm_ids)
       self.all_doc_feat_dict["next_sentence_labels"].append([next_sentence_label])
+
 
 if __name__ == "__main__":
   arg_parser = argparse.ArgumentParser(description="Bert / Create Pretraining Data")

@@ -16,6 +16,7 @@ from models import Model
 from evaluation import Evaluation
 from transformers import AdamW, get_linear_schedule_with_warmup
 
+
 class ResponseSelection(object):
   def __init__(self, hparams):
     self.hparams = hparams
@@ -173,7 +174,7 @@ class ResponseSelection(object):
         accu_batch += buffer_batch["res_sel"]["label"].shape[0]
 
         if self.hparams.virtual_batch_size == accu_batch \
-            or batch_idx == (len(self.train_dataset) // self.hparams.train_batch_size): # last batch
+            or batch_idx == (len(self.train_dataset) // self.hparams.train_batch_size):  # last batch
 
           self.optimizer.step()
           if self.hparams.optimizer_type == "AdamW":
