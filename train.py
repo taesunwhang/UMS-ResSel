@@ -176,11 +176,11 @@ class ResponseSelection(object):
         if self.hparams.virtual_batch_size == accu_batch \
             or batch_idx == (len(self.train_dataset) // self.hparams.train_batch_size):  # last batch
 
+          nn.utils.clip_grad_norm_(self.model.parameters(), self.hparams.max_gradient_norm)
           self.optimizer.step()
           if self.hparams.optimizer_type == "AdamW":
             self.scheduler.step()
 
-          nn.utils.clip_grad_norm_(self.model.parameters(), self.hparams.max_gradient_norm)
           self.optimizer.zero_grad()
 
           accu_batch = 0
